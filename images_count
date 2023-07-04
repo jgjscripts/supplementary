@@ -1,0 +1,89 @@
+import os
+import pandas as pd
+
+def count_images_with_prefix(folder_path):
+    prefix_counts = []
+    
+    # Iterate through the subfolders and files in the main folder
+    for root, dirs, files in os.walk(folder_path):
+        subfolder_counts = {}
+        
+        # Count images for each prefix within the current subfolder
+        for file_name in files:
+            parts = file_name.split('_')
+            if len(parts) >= 2:
+                prefix = parts[0].lower()  # Convert to lowercase
+                component = parts[1].lower()  # Convert to lowercase
+                key = prefix + "_" + component
+                subfolder_counts[key] = subfolder_counts.get(key, 0) + 1
+        
+        # Append the counts for the current subfolder to the prefix_counts list
+        if subfolder_counts:
+            prefix_counts.append(subfolder_counts)
+    
+    # Create a DataFrame from the prefix_counts list
+    df = pd.DataFrame(prefix_counts).fillna(0)
+    
+    return df
+
+# Specify the folder path
+folder_path = "/path/to/Train"
+
+# Call the function to get the counts for each subfolder
+prefix_counts_df = count_images_with_prefix(folder_path)
+
+# Print the DataFrame
+print(prefix_counts_df)
+
+
+
+
+
+
+
+
+
+
+
+
+#######################################################################################################
+##########################################################################
+
+import os
+import pandas as pd
+
+def count_images_with_prefix(folder_path):
+    dfs = []
+    
+    # Iterate through the subfolders and files in the main folder
+    for root, dirs, files in os.walk(folder_path):
+        subfolder_counts = {}
+        
+        # Count images for each prefix within the current subfolder
+        for file_name in files:
+            parts = file_name.split('_')
+            if len(parts) >= 2:
+                prefix = parts[0].lower()  # Convert to lowercase
+                component = parts[1].lower()  # Convert to lowercase
+                key = prefix + "_" + component
+                subfolder_counts[key] = subfolder_counts.get(key, 0) + 1
+        
+        # Create a DataFrame from the subfolder_counts dictionary
+        if subfolder_counts:
+            df = pd.DataFrame(subfolder_counts, index=[root])
+            dfs.append(df)
+    
+    return dfs
+
+# Specify the folder path
+folder_path = "/path/to/Train"
+
+# Call the function to get the counts for each subfolder
+subfolder_dfs = count_images_with_prefix(folder_path)
+
+# Print the separate DataFrames for each subfolder
+for i, df in enumerate(subfolder_dfs):
+    print(f"Subfolder {i+1}:")
+    print(df)
+    print()
+
